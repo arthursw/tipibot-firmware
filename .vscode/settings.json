@@ -1,0 +1,6 @@
+{
+    "terminal.integrated.env.osx": {
+        "PATH": "/Users/Arthur/.platformio/penv/bin:/Users/Arthur/.platformio/penv:/Users/Arthur/.rvm/gems/ruby-2.3.3/bin:/Users/Arthur/.rvm/gems/ruby-2.3.3@global/bin:/Users/Arthur/.rvm/rubies/ruby-2.3.3/bin:/Users/Arthur/.rbenv/shims:/usr/local/sbin:/Applications:/Users/Arthur/Projects/Scripts:/Users/Arthur/perl5/bin:/Users/Arthur/.nvm/versions/node/v10.1.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/Arthur/.npm_modules/bin:/Users/Arthur/.rvm/bin",
+        "PLATFORMIO_CALLER": "vscode"
+    }
+}
