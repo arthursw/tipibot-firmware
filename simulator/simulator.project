@@ -13,6 +13,12 @@
     <File Name="json.hpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="tipibot">
+    <File Name="../src/utils.h"/>
+    <File Name="../src/serial.h"/>
+    <File Name="../src/motors.h"/>
+    <File Name="../src/communication.h"/>
+    <File Name="../src/commands.h"/>
+    <File Name="../src/actions.h"/>
     <File Name="../src/tipibot.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="FakeArduino">

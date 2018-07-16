@@ -1,15 +1,6 @@
-extern unsigned int microstepResolution;
-extern bool motorsOn;
-extern bool invertMotorL;
-extern bool invertMotorR;
-extern unsigned int nMicroStepsL;
-extern unsigned int nMicroStepsR;
-extern unsigned int microstepResolutionL;
-extern unsigned int microstepResolutionR;
-extern bool clockwiseL;
-extern bool clockwiseR;
-extern unsigned long nStepsToDoL;
-extern unsigned long nStepsToDoR;
+// Microsteps
+unsigned int nMicroStepsL = 0;
+unsigned int nMicroStepsR = 0;
 
 void step(unsigned int directionPin, unsigned int stepPin, bool clockwise, unsigned int* nSubSteps, unsigned int motorMicrostepResolution)
 {

@@ -1,11 +1,8 @@
 #include <stdio.h>
 
-extern float machineWidth;
-extern float millimetersPerStep;
-
 float stof(String& str) {
   #ifdef SIMULATOR
-    return std::stof(serialInput);
+    return std::stof(str);
   #else
     return str.toFloat();
   #endif
