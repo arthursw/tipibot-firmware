@@ -1,3 +1,4 @@
+bool positionIsSet = false;
 
 void reset() {
   Serial.println("RESET");
@@ -53,24 +54,27 @@ void startCommand(bool sendReady) {
     } else {
       minSpeed = MIN_MOTOR_SPEED;
     }
+    
+    if(parametersSet[PARAMETER_X] || parametersSet[PARAMETER_Y]) {
 
-    if((parametersSet[PARAMETER_X] || parametersSet[PARAMETER_Y]) && positionX >= 0.0 && positionY >= 0.0) {
+      if(positionIsSet) {
 
-      float targetX = parametersSet[PARAMETER_X] ? parameters[PARAMETER_X] : positionX;
-      float targetY = parametersSet[PARAMETER_Y] ? parameters[PARAMETER_Y] : positionY;
+        float targetX = parametersSet[PARAMETER_X] ? parameters[PARAMETER_X] : positionX;
+        float targetY = parametersSet[PARAMETER_Y] ? parameters[PARAMETER_Y] : positionY;
+        if(command == MOVE_DIRECT) {
+          setTarget(targetX, targetY);
+        } else if(command == MOVE_LINEAR) {
+          setTargetLinear(targetX, targetY);
+        }
 
-      if(command == MOVE_DIRECT) {
-        setTarget(targetX, targetY);
-      } else if(command == MOVE_LINEAR) {
-        setTargetLinear(targetX, targetY);
-      }
-      
-    } else {
-      if(positionX < 0.0 || positionY < 0.0) {
+      } else {
         Serial.println("Trying to move while position is not set, please send position before moving.");
       }
+
+    } else {              // If we don't need to move since parameters x or y was not set: IDLE
       command = IDLE;
     }
+
   } else if(command == WAIT) {
     unsigned long delayMilliseconds = parameters[PARAMETER_P];
     SerialPrintln1("Wait: ", delayMilliseconds);
@@ -135,6 +139,7 @@ void startCommand(bool sendReady) {
   } else if(command == SET_POSITION) {
 
     setPosition(parameters[PARAMETER_X], parameters[PARAMETER_Y]);
+    positionIsSet = true;
     command = IDLE;
 
     SerialPrintln4("SET_POSITION: Position: x", positionX, "y", positionY, "Position: l", positionL, "r", positionR);

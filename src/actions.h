@@ -112,8 +112,6 @@ void computeStepsToDo() {
   nStepsToDoR = abs(deltaR);
 
   if (nStepsToDoL == 0 && nStepsToDoR == 0) {
-    // Reached position
-    Serial.println("Error: trying to set speed while reached position.");
     return;
   }
 
@@ -233,7 +231,7 @@ void updateMotors(bool mustComputeSpeed = true) {
     stepFastestMotor();
   }
 
-  if(nStepsDoneFastest * nStepsToDoSlowest / nStepsToDoFastest > nStepsDoneSlowest && nStepsDoneSlowest < nStepsToDoSlowest) {
+  if(nStepsToDoFastest > 0 && nStepsDoneFastest * nStepsToDoSlowest / nStepsToDoFastest > nStepsDoneSlowest && nStepsDoneSlowest < nStepsToDoSlowest) {
     stepSlowestMotor();
   }
 
