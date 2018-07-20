@@ -31,7 +31,7 @@ void digitalWrite(int pin, int value);
 #define PRINT_SERIAL_READ
 #define DEBUG
 
-#include "../src/tipibot.h"
+#include "../tipibot/tipibot.h"
 
 int motorDirectionL = 0;
 int motorDirectionR = 0;

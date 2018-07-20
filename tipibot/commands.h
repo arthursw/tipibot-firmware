@@ -102,6 +102,8 @@ void startCommand(bool sendReady) {
     millimetersPerStep = millimetersPerRevolution / (stepsPerRevolution * microstepResolution);
 
     SerialPrintln4("SETUP: machineWidth", machineWidth, "stepsPerRevolution", stepsPerRevolution, "millimetersPerRevolution", millimetersPerRevolution, "millimetersPerStep", millimetersPerStep);
+    
+    enableMotors();
 
     command = IDLE;
 

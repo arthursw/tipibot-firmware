@@ -6,7 +6,6 @@ using namespace std;
 #include <Servo.h>
 #endif
 
-
 // Constants
 
 const unsigned int STEP_L = 36;
@@ -36,7 +35,7 @@ const unsigned int MIN_MOTOR_PULSE_WIDTH = 1;
 const unsigned long TIME_TO_CONSIDER_STOP = 500000L;        // After this amount of microseconds doing nothing: set speed to minSpeed
 
 // Speed is in steps per seconds (step/s)
-// Acceleration in steps per seconds^2 (step/s^2)
+// Acceleration in steps per seconds^2 (step/s^2) (but this is not really respected)
 const float MAX_MOTOR_SPEED = 5 * 200.0 * 32;               // 32 000 = 5 turns per seconds
 const float MIN_MOTOR_SPEED = 10;
 
