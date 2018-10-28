@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Arthur Masson
-Date                   :=20/07/2018
+Date                   :=10/10/2018
 CodeLitePath           :="/Users/Arthur/Library/Application Support/codelite"
 LinkerName             :=clang++
 SharedObjectLinkerName :=clang++ -shared -fPIC
@@ -60,7 +60,7 @@ AS       := llvm-as
 ## User defined environment variables
 ##
 CodeLiteDir:=/private/var/folders/sz/f97g80v149b689p1jvnwybgr0000gn/T/AppTranslocation/D2C18F91-D50A-44B6-9AB4-AF2DF7C27BBA/d/codelite.app/Contents/SharedSupport/
-Objects0=$(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/FakeArduino_FakeArduino.cpp$(ObjectSuffix) $(IntermediateDirectory)/FakeArduino_SD.cpp$(ObjectSuffix) $(IntermediateDirectory)/easywsclient.cpp$(ObjectSuffix) $(IntermediateDirectory)/FakeArduino_fake_serial.cpp$(ObjectSuffix) $(IntermediateDirectory)/FakeArduino_AccelStepper.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/FakeArduino_FakeArduino.cpp$(ObjectSuffix) $(IntermediateDirectory)/FakeArduino_SD.cpp$(ObjectSuffix) $(IntermediateDirectory)/FakeArduino_fake_serial.cpp$(ObjectSuffix) $(IntermediateDirectory)/FakeArduino_AccelStepper.cpp$(ObjectSuffix) $(IntermediateDirectory)/easywsclient.cpp$(ObjectSuffix) 
 
 
 
@@ -106,11 +106,6 @@ $(IntermediateDirectory)/FakeArduino_SD.cpp$(ObjectSuffix): FakeArduino/SD.cpp
 $(IntermediateDirectory)/FakeArduino_SD.cpp$(PreprocessSuffix): FakeArduino/SD.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/FakeArduino_SD.cpp$(PreprocessSuffix) FakeArduino/SD.cpp
 
-$(IntermediateDirectory)/easywsclient.cpp$(ObjectSuffix): easywsclient.cpp 
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/Users/Arthur/Documents/PlatformIO/Projects/Tipibot/simulator/easywsclient.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/easywsclient.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/easywsclient.cpp$(PreprocessSuffix): easywsclient.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/easywsclient.cpp$(PreprocessSuffix) easywsclient.cpp
-
 $(IntermediateDirectory)/FakeArduino_fake_serial.cpp$(ObjectSuffix): FakeArduino/fake_serial.cpp 
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/Users/Arthur/Documents/PlatformIO/Projects/Tipibot/simulator/FakeArduino/fake_serial.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/FakeArduino_fake_serial.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/FakeArduino_fake_serial.cpp$(PreprocessSuffix): FakeArduino/fake_serial.cpp
@@ -120,6 +115,11 @@ $(IntermediateDirectory)/FakeArduino_AccelStepper.cpp$(ObjectSuffix): FakeArduin
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/Users/Arthur/Documents/PlatformIO/Projects/Tipibot/simulator/FakeArduino/AccelStepper.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/FakeArduino_AccelStepper.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/FakeArduino_AccelStepper.cpp$(PreprocessSuffix): FakeArduino/AccelStepper.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/FakeArduino_AccelStepper.cpp$(PreprocessSuffix) FakeArduino/AccelStepper.cpp
+
+$(IntermediateDirectory)/easywsclient.cpp$(ObjectSuffix): easywsclient.cpp 
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/Users/Arthur/Documents/PlatformIO/Projects/Tipibot/simulator/easywsclient.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/easywsclient.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/easywsclient.cpp$(PreprocessSuffix): easywsclient.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/easywsclient.cpp$(PreprocessSuffix) easywsclient.cpp
 
 ##
 ## Clean

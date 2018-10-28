@@ -1,5 +1,7 @@
 #define ENABLE_SERIAL
 
+// Those are just functions to easily print variables values on one line
+
 void SerialPrint(const char* message) {
   #ifdef ENABLE_SERIAL
   Serial.print(message);

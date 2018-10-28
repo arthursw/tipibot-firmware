@@ -2,6 +2,7 @@
 unsigned int nMicroStepsL = 0;
 unsigned int nMicroStepsR = 0;
 
+// Trigger one step on a motor (taken from AccelStepper)
 void step(unsigned int directionPin, unsigned int stepPin, bool clockwise, unsigned int* nSubSteps, unsigned int motorMicrostepResolution)
 {
   // Ignore sub steps

@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+// Parse a float from a String (not the same in c++ in the simulator and in Arduino)
 float stof(String& str) {
   #ifdef SIMULATOR
     return std::stof(str);
@@ -8,6 +9,7 @@ float stof(String& str) {
   #endif
 }
 
+// Convert from ortho to polar coordinates
 void orthoToPolar(float x, float y, long* l, long* r) {
   float x2 = x * x;
   float y2 = y * y;
@@ -17,6 +19,7 @@ void orthoToPolar(float x, float y, long* l, long* r) {
   *r = round(sqrt(WmX2 + y2) / millimetersPerStep);
 }
 
+// Convert from polar to ortho coordinates
 void polarToOrtho(long l, long r, float* x, float* y) {
   float lf = l * millimetersPerStep;
   float rf = r * millimetersPerStep;

@@ -14,14 +14,15 @@ long subTargetR = 0L;
 
 unsigned long lastFeedbackTime = 0;
 
+// This prints the current position in (L, R) coordinates, it is used for the feedback of the tipibot controller
 void printPositions(bool force = false) {
   if(feedbackRate == 0) {
     return;
   }
 
+  // only print position at feedbackRate
   unsigned long time = micros();
   unsigned long deltaTime = time - lastFeedbackTime;
-  
   float period = 1000000L / feedbackRate;
 
   if(!force && deltaTime < period) {
@@ -83,6 +84,9 @@ void computeMicrostepResolution(float speed, int M0, int M1, int M2, unsigned in
   setMicrostepResolutionFromPower(microstepResolutionPower, M0, M1, M2, motorMicrostepResolution);
 }
 
+// Compute the microstep resolution depending on the current speed: use low resolution / full steps at high speed, high resolution / small microsteps at low speed
+// This theoretically enables a wider range of speed, usefull to reach high speed for spraypaint
+// This was fun to imagine but not tested since it requires a special board with the driver pins wired to digital outputs (and the drivers might not handle this properly)
 void computeProgressiveMicrostep(unsigned long nStepsToDoL, unsigned long nStepsToDoR) {
     float speedL = speed;
     float speedR = speed;
@@ -115,13 +119,10 @@ void computeStepsToDo() {
     return;
   }
 
-  // Note: this might not be the best place to compute progressive microsteps since speed is not really related to nStepsToDo
+  // Note: there could be a better place to compute progressive microsteps
   if(progressiveMicrosteps) {
     computeProgressiveMicrostep(nStepsToDoL, nStepsToDoR);
   }
-
-  // SerialPrintln4("--- computeStepsToDo: nStepsToDo: l", nStepsToDoL, "r", nStepsToDoR, "clockwise: l", (unsigned long)clockwiseL, "r", (unsigned long)clockwiseR);
-  // SerialPrintln4("--- computeStepsToDo: subTarget: l", subTargetL, "r", subTargetR, "position: l", positionL, "r", positionR);
 }
 
 // Compute global speed in orthogonal space (x, y - mm) from acceleration
@@ -158,25 +159,19 @@ void computeSpeed(unsigned long deltaTime) {
     deceleration = true;
     decelerate(deltaTime);
 
-    // cout << "decelerate ";
-
   } else if(speed < maxSpeed && !deceleration) {
     
     accelerate(deltaTime);
 
-    // cout << "accelerate ";
   }
   
-  // cout << "nStepsLeft: " << nStepsLeft << ", nStepsToStop: " << nStepsToStop << ", speed: " << speed << ", acceleration: " << acceleration << endl;
-
   // SerialPrintln2("nStepsLeft", nStepsLeft, "nStepsToStop", nStepsToStop, true);
   // SerialPrintln2("speed", speed, "acceleration", acceleration, true);
-
-  // cout << "speed: " << speed << endl;
 }
 
 // updates
 
+// Update servo at servoSpeed
 void updatePen() {
 
   unsigned long time = micros();
@@ -205,6 +200,7 @@ void updatePen() {
 
 void updateMotors(bool mustComputeSpeed = true) {
 
+  // Only step when necessary, at given speed
   unsigned long time = micros();
   unsigned long deltaTime = time - lastStepTime;
   
@@ -217,9 +213,15 @@ void updateMotors(bool mustComputeSpeed = true) {
 
   lastStepTime = time;
 
+  // Update speed if necessary
   if(mustComputeSpeed) {
     computeSpeed(deltaTime);
   }
+
+  // One motor will have to do more steps than the other ; the fastest will always step while the slower will step less often:
+  // step if nStepsDoneFastest * nStepsToDoSlowest / nStepsToDoFastest > nStepsDoneSlowest
+  // that is if we have made more "fast steps" proportionnaly to the number of "slow steps" given the ratio nStepsToDoSlowest / nStepsToDoFastest 
+  // In both case: make sure that we must step: nStepsDone < nStepsToDo
 
   unsigned long nStepsToDoFastest = max(nStepsToDoL, nStepsToDoR);
   unsigned long nStepsDoneFastest = max(nStepsDoneL, nStepsDoneR);
@@ -235,9 +237,11 @@ void updateMotors(bool mustComputeSpeed = true) {
     stepSlowestMotor();
   }
 
+  // Update the (X, Y) position given the new (L, R) position
   polarToOrtho(positionL, positionR, &positionX, &positionY);
 }
 
+// Update motors in the case of a direct move: just update motors and check if target is reached
 void updateMotorsDirect() {
   updateMotors();
 
@@ -250,7 +254,7 @@ void updateMotorsDirect() {
   }
 }
 
-// Called at each step (of size linearStepDistance, in mm) from updateMotorsLinear, always with the same target (same x and y values)
+// Called at each step (of size linearStepDistance, in mm) from updateMotorsLinear, always with the same targetX and targetY value
 void updateTarget() {
 
   float deltaX = targetX - startX;
@@ -269,6 +273,10 @@ void updateTarget() {
   // SerialPrintln4("-st: l", subTargetL, "r", subTargetR, "position l", positionL, "r", positionR);
 }
 
+// Update for a linear move: the move is subdivided in many small "linear steps" (of length linearStepDistance mm)
+// After updating the motors, check if we reached the end of the current linear step
+// If so: compute a new one and continue until we reach the target: when nLinearStepsDone == nLinearStepsToDo 
+// (here we must check nLinearStepsDone >= nLinearStepsToDo since nLinearStepsToDo can be 0 in which case nLinearStepsDone will be 1)
 void updateMotorsLinear() {
   updateMotors();
   printPositions();
@@ -277,10 +285,12 @@ void updateMotorsLinear() {
 
   if (reachedTarget) {
     nLinearStepsDone++;
-    if (nLinearStepsDone >= nLinearStepsToDo) {                   // nLinearStepsToDo can be 0, in which case nLinearStepsDone > nLinearStepsToDo
+
+    if (nLinearStepsDone >= nLinearStepsToDo) {      // If we reach the target (nLinearStepsDone == nLinearStepsToDo): command = IDLE
+                                                     // nLinearStepsToDo can be 0, in which case nLinearStepsDone is 1 (so nLinearStepsDone > nLinearStepsToDo)
       printPositions(true);
       command = IDLE;
-    } else {
+    } else {                                         // Otherwise, compute next linear step
       updateTarget();
     }
   }

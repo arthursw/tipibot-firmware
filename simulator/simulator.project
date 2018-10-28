@@ -13,6 +13,14 @@
     <File Name="json.hpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="tipibot">
+    <File Name="../tipibot/tipibot.h"/>
+    <File Name="../tipibot/serial.h"/>
+    <File Name="../tipibot/motors.h"/>
+    <File Name="../tipibot/tipibotAccelerations.h"/>
+    <File Name="../tipibot/commands.h"/>
+    <File Name="../tipibot/actions.h"/>
+    <File Name="../tipibot/communication.h"/>
+    <File Name="../tipibot/utils.h"/>
     <File Name="../src/utils.h"/>
     <File Name="../src/serial.h"/>
     <File Name="../src/motors.h"/>

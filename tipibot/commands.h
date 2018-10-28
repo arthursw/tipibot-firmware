@@ -1,5 +1,7 @@
 bool positionIsSet = false;
+bool isInitialized = false;
 
+// Reset the command variables
 void reset() {
   Serial.println("RESET");
 
@@ -23,6 +25,7 @@ bool nextCommandReadyToStart() {
   return nextCommand != IDLE && readingType == COMMAND;
 }
 
+// Affect the parsed parameter values to the appropriate variables and initialize command execution
 void startCommand(bool sendReady) {
   
   command = nextCommand;
@@ -30,6 +33,8 @@ void startCommand(bool sendReady) {
 
   // TODO: handle errors in parameters
 
+  // NOTE: command == MOVE_DIRECT or MOVE_LINEAR can just mean set min/max speed or set acceleration
+  // This is inherited from PenPlotter / Marlin GCode: "G0 F500;" will only set the maximum speed of the pen
   if(command == MOVE_DIRECT || command == MOVE_LINEAR) {
 
     if(parametersSet[PARAMETER_F]) {
@@ -57,10 +62,12 @@ void startCommand(bool sendReady) {
     
     if(parametersSet[PARAMETER_X] || parametersSet[PARAMETER_Y]) {
 
-      if(positionIsSet) {
+      if(positionIsSet && isInitialized) {          // Check that the position is set and the machine has been initialized before moving 
+                                                    // this prevent from moving blindly to a dangerous position
 
         float targetX = parametersSet[PARAMETER_X] ? parameters[PARAMETER_X] : positionX;
         float targetY = parametersSet[PARAMETER_Y] ? parameters[PARAMETER_Y] : positionY;
+
         if(command == MOVE_DIRECT) {
           setTarget(targetX, targetY);
         } else if(command == MOVE_LINEAR) {
@@ -68,18 +75,19 @@ void startCommand(bool sendReady) {
         }
 
       } else {
-        Serial.println("Trying to move while position is not set, please send position before moving.");
+        Serial.println("Trying to move whereas the position is not set or the machine is not initialized, please initialize and set position before moving.");
       }
 
-    } else {              // If we don't need to move since parameters x or y was not set: IDLE
+    } else {              // If we don't need to move since parameters x or y was not set: IDLE (we just wanted to set min/max speed or acceleration)
       command = IDLE;
     }
 
   } else if(command == WAIT) {
+
     unsigned long delayMilliseconds = parameters[PARAMETER_P];
     SerialPrintln1("Wait: ", delayMilliseconds);
-    // cout << "Time to restart: " << (micros() + delayMilliseconds * 1000L) << endl;
     delayDuration = micros() + delayMilliseconds * 1000L;
+
   } else if(command == SETUP) {
 
 
@@ -103,6 +111,7 @@ void startCommand(bool sendReady) {
 
     SerialPrintln4("SETUP: machineWidth", machineWidth, "stepsPerRevolution", stepsPerRevolution, "millimetersPerRevolution", millimetersPerRevolution, "millimetersPerStep", millimetersPerStep);
     
+    isInitialized = true;
     enableMotors();
 
     command = IDLE;
@@ -178,6 +187,7 @@ void startCommand(bool sendReady) {
   }
 }
 
+
 void executeCommand() {
 
   if (command == MOVE_DIRECT) {
@@ -187,7 +197,7 @@ void executeCommand() {
   } else if (command == MOVE_PEN) {
     updatePen();
   } else if (command == WAIT) {
-    // cout << "wait: " << micros() <<  ", delay duration: " << delayDuration << endl;
+    
     if(micros() > delayDuration) {
       command = IDLE;
       delayDuration = 0;
